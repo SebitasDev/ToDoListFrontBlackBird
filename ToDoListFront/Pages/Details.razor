@@ -1,0 +1,38 @@
+@page "/Details/{id}"
+@using ToDoListFront.Models
+@using ToDoListFront.Repository
+@inject IToDoRepository ToDoRepository
+
+
+@if (_ToDo == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    <p>@_ToDo.Id</p>
+    <p>@_ToDo.Name</p>
+    <p>@_ToDo.Description</p>
+    <p>@_ToDo.Date_Create</p>
+    <p>@_ToDo.Date_Finish</p>
+    <p>@_ToDo.Status</p>
+}
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private ToDo _ToDo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetToDoById();
+    }
+
+    private async Task GetToDoById()
+    {
+        _ToDo = await ToDoRepository.GetToDoById(Id);
+    }
+}

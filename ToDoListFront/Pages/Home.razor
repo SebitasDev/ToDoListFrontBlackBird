@@ -1,0 +1,100 @@
+﻿@page "/"
+@using ToDoListFront.Models
+@using ToDoListFront.Repository
+@using ToDoListFront.Pages.Components
+@using Color = System.Drawing.Color
+@inject IToDoRepository ToDoRepository
+@inject NavigationManager Navigation
+
+<PageTitle>Home</PageTitle>
+
+
+<style>
+    .container-toDos{
+        width: 75%;
+        height: 60%;
+        margin: auto;
+        padding: 7px;
+    }
+    
+    .container-nota{
+        padding: 25px; 
+        background-color: #d9d7d7;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-direction: column;
+    }
+    
+    .container-toDos__button{
+        width: 25%;
+    }
+</style>
+
+
+<MudPaper Elevation="0" Class="container-toDos">
+    <MudGrid Spacing="6">
+        <MudItem xs="12">
+            <MudPaper Elevation="0" Class="d-flex align-center justify-center mud-width-full py-8">
+                <MudText Typo="Typo.h4">TODO LIST</MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudPaper Elevation="0" Style="padding: 5px" Class="d-flex align-center justify-space-evenly mud-width-full py-8">
+                <MudButton @onclick="() => NavigateToCreateToDo()" Class="container-toDos__button" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+                    <MudText Typo="Typo.button">Add Task</MudText>
+                </MudButton>
+                
+                <MudButton Class="container-toDos__button" Variant="Variant.Outlined" Color="MudBlazor.Color.Secondary">
+                    <MudText Typo="Typo.button">All</MudText>
+                </MudButton>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudPaper Class="mud-width-full py-8 container-nota">
+                
+                @if (_toDoList == null)
+                {
+                    <p>Loading task</p>
+                }
+                else
+                {
+                    @foreach (var toDo in _toDoList)
+                    {
+                        <ToDoComponent Id="@toDo.Id" Nombre="@toDo.Name" Fecha_Creacion="@toDo.Date_Create" Status="@toDo.Status" CheckBox="false" OnTaskDeleted="UpdateTasks"/>
+                    }
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+
+@code{
+    
+    
+    private IEnumerable<ToDo>? _toDoList;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllToDos(); 
+    }
+
+    private async Task GetAllToDos()
+    {
+        _toDoList = await ToDoRepository.GetAllToDo();
+        
+    }
+    
+    private async Task UpdateTasks()
+    {
+        await GetAllToDos();
+    }
+
+    private void NavigateToCreateToDo()
+    {
+        Navigation.NavigateTo("/CreateToDo");
+    }
+}

@@ -1,0 +1,41 @@
+@using ToDoListFront.Models
+@using ToDoListFront.Pages.Components.Dialogs
+@using ToDoListFront.Repository
+@using Color = System.Drawing.Color
+@inject IToDoRepository ToDoRepository
+@inject IDialogService DialogService
+
+@namespace ToDoListFront.Pages.Components
+
+<MudButton @onclick="() => SoftDelete()" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+    <MudIcon Icon="@Icons.Material.Filled.Delete"></MudIcon>
+</MudButton>
+
+
+@code {
+    public ApiResponseString? Response { get; set; } = null;
+    
+    [Parameter]
+    public required string Id { get; set; }
+    
+    [Parameter]
+    public EventCallback OnTaskDeleted { get; set; }
+
+    private async Task SoftDelete()
+    {
+        var response = await ToDoRepository.SoftDelete(Id);
+
+        Response = response;
+        
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var parameters = new DialogParameters
+        {
+            { "ContentText", Response?.Response ?? "No response from server" }
+        };
+
+        DialogService.Show<DeleteDialogComponent>("Delete Confirmation", parameters, options);
+        
+        await OnTaskDeleted.InvokeAsync();
+    }
+}

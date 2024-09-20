@@ -1,0 +1,35 @@
+@page "/CreateToDo"
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using ToDoListFront.Repository
+@inject IToDoRepository ToDoRepository
+@inject NavigationManager Navigation
+
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                <MudTextField @bind-Value="Nombre" T="string" Label="Nombre" Required="true" RequiredError="Nombre necesaario" />
+                <MudTextField @bind-Value="Descripcion" T="string" Label="Descripcion" Required="true" RequiredError="Descripcion necesaria"  />
+                <MudButton @onclick="() => CreateToDoTask()" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Crear Tarea</MudButton>
+            </MudForm>   
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    bool success;
+    string[] errors = { };
+    MudForm form;
+    
+    public string Nombre { get; set; }
+    public string Descripcion { get; set; }
+
+    public async Task CreateToDoTask()
+    {
+        var response = await ToDoRepository.CreateToDo(Nombre, Descripcion);
+        Nombre = "";
+        Descripcion = "";
+        Navigation.NavigateTo($"/Details/{response.Response.Id}");
+    }
+}

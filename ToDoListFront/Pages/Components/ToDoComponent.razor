@@ -1,0 +1,88 @@
+@using Color = System.Drawing.Color
+@inject NavigationManager Navigation
+
+@namespace ToDoListFront.Pages.Components
+
+
+<style>
+    .nota{
+        width: 100%;
+        padding: 6px;
+        transition: transform 0.3s ease-in-out;
+        cursor: pointer;
+    }
+    
+    .nota:hover{
+        transform: scale(1.05);
+        background-color: rgba(234, 131, 252, 0.67);
+    }
+
+    .info-nota{
+        width: auto;
+        padding: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .info-nota__container-text{
+        width: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+    }
+
+    .funciones-nota{
+        display: flex;
+        gap: 5px;
+    }
+</style>
+
+
+<MudPaper @onclick="DetailsAsync" Elevation="1" Class="d-flex align-center justify-space-between nota">
+    <MudPaper Elevation="0" Class="info-nota">
+        <MudCheckBox @bind-Value="CheckBox" Color="MudBlazor.Color.Primary"></MudCheckBox>
+        <MudPaper Elevation="0" Class="info-nota__container-text">
+            <p>@Nombre</p>
+            <p>@Fecha_Creacion</p>
+        </MudPaper>
+    </MudPaper>
+
+    <MudPaper Elevation="0" Class="funciones-nota">
+        <SoftDeleteComponent Id="@Id" OnTaskDeleted="OnTaskDeleted"/>
+        <MudButton Variant="Variant.Outlined" Color="MudBlazor.Color.Primary">
+            <MudIcon Icon="@Icons.Material.Filled.Edit"></MudIcon>
+        </MudButton>
+    </MudPaper>
+</MudPaper>
+
+
+@code {
+    private bool showDeleteAlert = false;
+    
+    [Parameter]
+    public required string Id { get; set; }
+    [Parameter]
+    public required string Nombre { get; set; }
+    [Parameter]
+    public string? Fecha_Creacion { get; set; }
+    [Parameter]
+    public required string Status { get; set; }
+    [Parameter]
+    public required bool CheckBox { get; set; }
+    [Parameter]
+    public EventCallback OnTaskDeleted { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        
+    }
+    
+
+    private void DetailsAsync()
+    {
+        Navigation.NavigateTo($"/Details/{Id}");
+    }
+    
+}
