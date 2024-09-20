@@ -10,7 +10,7 @@ WORKDIR /src
 COPY ["ToDoListFront.csproj", "."]
 RUN dotnet restore "ToDoListFront.csproj"
 COPY . .
-WORKDIR "/src/ToDoListFront"
+WORKDIR "/src"
 RUN dotnet build "ToDoListFront.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
