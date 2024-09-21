@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 # Ajustar la ruta si el .csproj está en una subcarpeta
-COPY ["src/ToDoListFront.csproj", "./"]
+COPY ["ToDoListFront.csproj", "./"]
 RUN dotnet restore "ToDoListFront.csproj"
 COPY . .
 WORKDIR "/src"
